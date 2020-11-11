@@ -35,8 +35,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.text.DateFormat;
 
 import static android.app.AlarmManager.RTC_WAKEUP;
+import static okhttp3.internal.http.HttpDate.format;
 
 public class TaskActivity extends AppCompatActivity{
 
@@ -75,7 +77,7 @@ public class TaskActivity extends AppCompatActivity{
             public void onClick(View v) {
                 int hour = timePicker.getCurrentHour();
                 int minute = timePicker.getCurrentMinute();
-                final String task ;
+                final String task ,dt;
                 task = editText.getText().toString();
 
                 Calendar startTime = Calendar.getInstance();
@@ -84,6 +86,7 @@ public class TaskActivity extends AppCompatActivity{
                 startTime.set(Calendar.SECOND, 0);
                 final long alarmStartTime = startTime.getTimeInMillis();
                 Date time = startTime.getTime();
+                dt = String.valueOf(time);
 
                 alarm.set(AlarmManager.RTC_WAKEUP, alarmStartTime, alarmIntent);
                 Toast.makeText(TaskActivity.this, "Done", Toast.LENGTH_SHORT).show();
@@ -95,7 +98,7 @@ public class TaskActivity extends AppCompatActivity{
                         final DocumentReference documentReference= firebaseFirestore.collection(userid).document(task);
                         Map<String,Object> user = new HashMap<>();
                         user.put("task",task);
-                        user.put("time",time);
+                        user.put("time",dt);
                         documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
